@@ -17,7 +17,7 @@ def show():
 
 def update():
     show()
-    index=int(("Enter the task index for the task you want to update : "))
+    index=int(input("Enter the task index for the task you want to update : "))
     option=input("Do you want to change the name? (y/n) ")
     if option == 'y':
         name=input("Enter new name : ")
