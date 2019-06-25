@@ -2,7 +2,6 @@ tasks=[]
 
 def create():
     name = input("Enter Task name: ")
-    print("koko")
     option = input("Do you wanna add the task at some index (y/n)? or simply at the end: ")
     if option=='y':
         show()
@@ -13,15 +12,12 @@ def create():
         #default status is incomplete ; data-structure used is dictionaries within list
 
 def show():
-    count=0
-    for t in tasks:
+    for count, t in enumerate(tasks):
         print("Task Index :",count, "\t\tTask name :",t["name"], "\t\tTask status :",t["status"])
-        count+=1
 
 def update():
     show()
-    index=input("Enter the task index for the task you want to update : ")
-    index=int(index)
+    index=int(("Enter the task index for the task you want to update : "))
     option=input("Do you want to change the name? (y/n) ")
     if option == 'y':
         name=input("Enter new name : ")
@@ -37,8 +33,7 @@ def delete():
     del tasks[int(index)]
 
 while True:
-    option = input("1. Create a Task\n2. List tasks\n3. Update a Task\n4. Delete a Task \n0. Exit Program\n")
-    option=int(option)
+    option = int(input("1. Create a Task\n2. List tasks\n3. Update a Task\n4. Delete a Task \n0. Exit Program\n"))
     if option==1:
         create()
     elif option==2:
