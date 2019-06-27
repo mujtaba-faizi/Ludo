@@ -63,7 +63,7 @@ def search():
         for line in file.readlines():
             if content in line:
                 print("The content exists in the file.")
-                return None
+                return
         print("The content does not exist in the file.")
         file.close()
 
