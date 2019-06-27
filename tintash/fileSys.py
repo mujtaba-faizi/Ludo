@@ -1,77 +1,108 @@
 import os
 
-def create(mode):
+
+def open_(mode):
     name = input("Enter File name: ")
-    f = open(name+".txt", mode)
-    return f
+    if os.path.exists(name + ".txt"):
+        file = open(name + ".txt", mode)
+        return file
+    else:
+        print("The file does not exist.")
+        return None
+
+
+def create():
+    name = input("Enter File name: ")
+    if os.path.exists(name + ".txt"):
+        print("The file already exists.")
+    else:
+        file = open(name + ".txt", "w+")
+        print("Created!!")
+        file.close()
+
 
 def show():
-    f = create("r")
-    content = f.read()
-    print(content)
-    f.close()
+    file = open_("r")
+    if file is not None:
+        content = file.read()
+        print(content)
+        file.close()
+
 
 def update():
-    option = input("Do you wanna overwrite the file (y/n)? or append it? ")
-    if option =='y':
-        f = create("w+")
+    option1 = input("Do you wanna overwrite the file (y/n)? ")
+    if option1 == 'y':
+        file = open_("w")
     else:
-        f = create("a+")
-    content = input("Enter the content you want to add in the file : ")
-    f.write(content)
-    while True:
-        option = input("Do you wanna add a new line (y/n)? ")
-        if option!='y':
-            break
+        file = open_("a")
+    if file is not None:
         content = input("Enter the content you want to add in the file : ")
-        f.write("\n"+content)
-    f.close()
+        file.write(content)
+        while True:
+            option2 = input("Do you wanna add a new line (y/n)? ")
+            if option2 != 'y':
+                break
+            content = input("Enter the content you want to add in the file : ")
+            file.write("\n" + content)
+        file.close()
+
 
 def delete():
     name = input("Enter the file name you want to delete : ")
-    if os.path.exists(name+".txt"):
-        os.remove(name+".txt")
+    if os.path.exists(name + ".txt"):
+        os.remove(name + ".txt")
+        print("Deleted!!")
     else:
-        print("The file does not exist")
+        print("The file doesn't exist.")
+
 
 def search():
-    check=0
-    content = input("Enter the content to check : ")
-    f = create("r")
-    for line in f.readlines():
-        if content in line:
-            print("The content exists in the file")
-            check=1
-            break
-    if check==0:
-        print("The content does not exist in the file")
+    file = open_("r")
+    if file is not None:
+        content = input("Enter the content to check : ")
+        for line in file.readlines():
+            if content in line:
+                print("The content exists in the file.")
+                return None
+        print("The content does not exist in the file.")
+        file.close()
+
 
 def replace():
-    word = input("Enter the word to replace : ")
-    rep = input("Enter the word to replace with : ")
-    f = create("r+")
-    content = f.read()
-    new_content = content.replace(word, rep)
-    f.truncate(0)
-    f.write(new_content)
-    print("Replaced!!")
-    f.close()
+    file = open_("r+")
+    if file is not None:
+        word = input("Enter the word to replace : ")
+        replacing_word = input("Enter the word to replace with : ")
+        for count, line in enumerate(file.readlines()):
+            if count == 0:     # Firstly, all the file content needs to removed before adding the new content.
+                file.truncate(0)
+            new_line = line.replace(word, replacing_word)
+            file.write(new_line)
+        print("Replaced!!")
+        file.close()
+
 
 while True:
-    option = int(input("1. Create a File\n2. Show File Content\n3. Update a File\n4. Delete a File \n5. Search content from a File "
-                       "\n6. Replace all \n0. Exit Program\n"))
-    if option==1:
-        f = create("w+")
-        f.close()
-    elif option==2:
-        show()
-    elif option==3:
-        update()
-    elif option==4:
-        delete()
-    elif option==5:
-        search()
-    elif option==6:
-        replace()
-    elif option==0:
-        break
+    option = input("1. Create a File\n2. Show File Content\n3. Update a File\n4. Delete a File"
+                   " \n5. Search content from a File\n6. Replace all \n0. Exit Program\n")
+    try:
+        option = int(option)
+    except ValueError:      # When the user enters anything other than an integer
+        print("Please select the right option (i.e. 0-6)")
+    finally:
+        if option == 1:
+            create()
+        elif option == 2:
+            show()
+        elif option == 3:
+            update()
+        elif option == 4:
+            delete()
+        elif option == 5:
+            search()
+        elif option == 6:
+            replace()
+        elif option == 0:
+            break
+        else:
+            print("Please select the right option (i.e. 0-6)")
