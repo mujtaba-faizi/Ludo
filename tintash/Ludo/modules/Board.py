@@ -25,6 +25,8 @@ class Board:
     # This sets the size of the window
     WINDOW_SIZE = [500, 500]
 
+    color = BLACK
+
     def __init__(self):
         # Initialize pygame
         pygame.init()
@@ -39,7 +41,7 @@ class Board:
         # Set the screen background
         self.screen.fill(self.GRAY)
 
-    def draw(self, row_a1, column_a1, row_a2, column_a2, row_b1, column_b1, row_b2, column_b2, dice):
+    def draw(self, row_a1, column_a1, row_a2, column_a2, row_b1, column_b1, row_b2, column_b2, dice, lock):
         # Draw the grid
         for row in range(15):
             for column in range(15):
@@ -68,10 +70,13 @@ class Board:
                                   (self.MARGIN + self.HEIGHT) * row + self.MARGIN,
                                   self.WIDTH,
                                   self.HEIGHT])
-                color = (random.randint(0, 100), random.randint(0, 100), random.randint(0, 100))
-                text = str(dice)
+
+                if lock == 0:   # dice roll means new text
+                    self.color = (random.randint(0, 100), random.randint(0, 100), random.randint(0, 100))
+
                 font = pygame.font.Font(None, 50)
-                text = font.render(text, True, color)
+                text = str(dice)
+                text = font.render(text, True, self.color)
                 self.screen.blit(text, (240, 235))  # dice number
 
         # Used to manage how fast the screen updates
