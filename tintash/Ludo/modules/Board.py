@@ -48,6 +48,9 @@ class Board:
                         or (column == 7 and row > 7 and row < 14) \
                         or (column == 7 and row > 0 and row < 7):
                     color = self.BLACK
+                elif ((row == 8) and (column == 13 or column == 2)) or ((row == 6) and (column == 12 or column == 1)) \
+                        or ((column == 6) and (row == 13 or row == 2)) or ((column == 8) and (row == 12 or row == 1)):
+                    color = self.PURPLE
                 if (row == rowA1 and column == columnA1) or (row == rowA2 and column == columnA2):
                     color = self.DARK_RED
                 if (row == rowB1 and column == columnB1) or (row == rowB2 and column == columnB2):
@@ -56,9 +59,6 @@ class Board:
                     color = self.GREEN
                 elif (row == 7 and column < 7 and column > 0):
                     color = self.RED
-                elif ((row == 8) and (column == 13 or column == 2)) or ((row == 6) and (column == 12 or column == 1)) \
-                        or ((column == 6) and (row == 13 or row == 2)) or ((column == 8) and (row == 12 or row == 1)):
-                    color = self.PURPLE
                 elif (row > 5 and row < 9 and column > 5 and column < 9):
                     color = self.GOLDEN
 
