@@ -16,31 +16,31 @@ class Ludo:
     MARGIN = 5
 
     # Initial value of dice as default
-    dice = 6
+    dice = 0
     # dice = random.ranom
 
     def __init__(self):
 
         PieceA1 = Piece(1)
         PieceA2 = Piece(2)
-        Pieces = [PieceA1, PieceA2]
+        PiecesA = [PieceA1, PieceA2]
 
         PieceB1 = Piece(1)
         PieceB2 = Piece(2)
-        Pieces = [PieceB1, PieceB2]
+        PiecesB = [PieceB1, PieceB2]
 
         # attributes
-        self.playerA = Player("RED", Pieces, 'A')
-        self.playerB = Player("GREEN", Pieces, 'B')
+        self.playerA = Player("GREEN", PiecesA, 'A')
+        self.playerB = Player("RED", PiecesB, 'B')
         self.board = Board()
 
 
-    def render(self, rowA1, columnA1, rowA2, columnA2, rowB1, columnB1, rowB2, columnB2):
+    def render(self):
 
         green1_route = self.playerA.get_route(1)
         green2_route = self.playerA.get_route(2)
-        red2_route = self.playerB.get_route(1)
-        red1_route = self.playerB.get_route(2)
+        red1_route = self.playerB.get_route(1)
+        red2_route = self.playerB.get_route(2)
 
         # Create a 2 dimensional array. A two dimensional
         # array is simply a list of lists.
@@ -77,16 +77,17 @@ class Ludo:
                     B = green2_route[self.playerA.pieces[1].current_pos]
                     C = red1_route[self.playerB.pieces[0].current_pos]
                     D = red2_route[self.playerB.pieces[1].current_pos]
+                    print(red1_route[self.playerB.pieces[0].current_pos])
 
                     print(A, B, C, D, pos)
 
-                    if A == pos or B == pos or C == pos or D == pos and lock == 0:
+                    if A == pos or B == pos or C == pos or D == pos and lock == 1:
                         if A == pos and player_turn == 0:
                             if self.playerA.pieces[0].state != 'home':
-                                print("llplp")
-                                self.playerA.pieces[0].current_pos += self.dice + 1
+                                self.playerA.pieces[0].current_pos += self.dice
                                 Piece = self.playerA.pieces[0]
                                 new_position = green1_route[Piece.current_pos]
+                                print("EDED", C[0], C[1], red1_route[self.playerB.pieces[0].current_pos])
                                 self.board.draw(C[0], C[1], D[0], D[1], new_position[0], new_position[1], B[0], B[1],
                                                 self.dice)
                                 player_turn = 1  # keep alternating player turns
@@ -97,11 +98,28 @@ class Ludo:
                                     self.playerA.pieces[0].current_pos += self.dice + 1
                                 Piece = self.playerA.pieces[0]
                                 new_position = green1_route[Piece.current_pos]
+                                self.playerA.pieces[0].state = 'safe'
                                 self.board.draw(C[0], C[1], D[0], D[1], new_position[0], new_position[1], B[0], B[1],
                                                 self.dice)
 
                         elif B == pos and player_turn == 0:
-
+                            if self.playerA.pieces[1].state != 'home':
+                                self.playerA.pieces[1].current_pos += self.dice
+                                Piece = self.playerA.pieces[1]
+                                new_position = green2_route[Piece.current_pos]
+                                self.board.draw(C[0], C[1], D[0], D[1], A[0], A[1], new_position[0], new_position[1],
+                                                self.dice)
+                                player_turn = 1  # keep alternating player turns
+                            elif self.dice == 6:
+                                if A == (11, 11):
+                                    self.playerA.pieces[1].current_pos += 1
+                                else:
+                                    self.playerA.pieces[1].current_pos += self.dice + 1
+                                Piece = self.playerA.pieces[1]
+                                new_position = green2_route[Piece.current_pos]
+                                self.playerA.pieces[1].state = 'safe'
+                                self.board.draw(C[0], C[1], D[0], D[1], A[0], A[1], new_position[0], new_position[1],
+                                                self.dice)
                             pass
                             player_turn = 1  # keep alternating player turns
 
@@ -125,9 +143,9 @@ class Ludo:
                     # print("Click ", pos, "Grid coordinates: ", row, column)
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                     # User presses enter
-                    print(red1_route[self.playerB.pieces[0].current_pos])
+                    print("REDRED", red1_route[self.playerB.pieces[0].current_pos])
                     if lock == 0:
-                        self.dice = random.randint(1, 6)
+                        self.dice = random.randint(5, 6)
                         self.board.draw(red1_route[self.playerB.pieces[0].current_pos][0]
                                         , red1_route[self.playerB.pieces[0].current_pos][1]
                                         , red2_route[self.playerB.pieces[1].current_pos][0]
@@ -143,6 +161,6 @@ class Ludo:
 
     def main(self):
 
-        self.render(2, 2, 3, 3, 12, 12, 11, 11)
+        self.render()
 
 
