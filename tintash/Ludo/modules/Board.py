@@ -1,5 +1,4 @@
 import pygame
-# import pickle
 import random
 
 
@@ -88,49 +87,6 @@ class Board:
         # # Be IDLE friendly. If you forget this line, the program will 'hang'
         # # on exit.
         # pygame.quit()
-
-    def render(self, rowA1, columnA1, rowA2, columnA2, rowB1, columnB1, rowB2, columnB2, dice):
-
-        # Create a 2 dimensional array. A two dimensional
-        # array is simply a list of lists.
-        grid = [[0 for x in range(15)] for y in range(15)]    # Add an empty array that will hold each cell in this row
-
-        # Set row 1, cell 5 to one. (Remember rows and
-        # column numbers start at zero.)
-        grid[1][5] = 1
-
-        # Loop until the user clicks the close button.
-        done = False
-
-        self.draw(2, 2, 3, 3, 12, 12, 11, 11, 0)
-
-        # coordinates = []
-        # -------- Main Program Loop -----------
-        while not done:
-            for event in pygame.event.get():  # User did something
-                if event.type == pygame.QUIT:  # If user clicked close
-                    done = True  # Flag that we are done so we exit this loop
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    # User clicks the mouse. Get the position
-                    pos = pygame.mouse.get_pos()
-                    # Change the x/y screen coordinates to grid coordinates
-                    column = pos[0] // (self.WIDTH + self.MARGIN)
-                    row = pos[1] // (self.HEIGHT + self.MARGIN)
-                    # coordinates.append((row, column))
-                    # Set that location to one
-                    grid[row][column] = 1
-                    print("Click ", pos, "Grid coordinates: ", row, column)
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                    # User presses enter
-                    dice = random.randint(1, 6)
-                    self.draw(2, 2, 3, 3, 12, 12, 11, 11, dice)
-                    # if player == 0:
-                    #     pass
-                    #     player = 1
-                    # else:
-                    #     pass
-                    #     player = 0
-
 
 
 

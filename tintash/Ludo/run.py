@@ -1,4 +1,4 @@
 from modules.Ludo import Ludo
 
-
-Ludo.main()
+game = Ludo()
+game.main()

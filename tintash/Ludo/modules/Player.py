@@ -1,22 +1,31 @@
 import pickle
-from modules import Piece
 
 
 class Player:
 
     # Initializer / Instance Attributes
-    def __init__(self, name, Pieces, player):
+    def __init__(self, name, pieces, player):
         self.name = name
-        self.Pieces = Pieces
+        self.pieces = pieces
         self.player = player
 
-    def get_route(self):
+    def get_route(self, piece):
         if self.player == 'A':
-            with open('PlayerA_route.pkl', 'rb') as f:
-                return pickle.load(f)
+            if piece == 1:
+                with open('data/PlayerA_route.pkl', 'rb') as f:
+                    route = pickle.load(f)
+                    route.insert(0, (12, 12))
+            else:
+                with open('data/PlayerA_route.pkl', 'rb') as f:
+                    route = pickle.load(f)
+                    route.insert(0, (11, 11))
         else:
-            with open('PlayerB_route.pkl', 'rb') as f:
-                return pickle.load(f)
-
-# Piec = Piece()
-# Player = Player("koko",Piece,'A')
+            if piece == 1:
+                with open('data/PlayerB_route.pkl', 'rb') as f:
+                    route = pickle.load(f)
+                    route.insert(0, (2, 2))
+            else:
+                with open('data/PlayerB_route.pkl', 'rb') as f:
+                    route = pickle.load(f)
+                    route.insert(0, (3, 3))
+        return route

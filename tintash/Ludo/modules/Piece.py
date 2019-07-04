@@ -1,9 +1,10 @@
 class Piece:
 
     # Initializer / Instance Attributes
-    def __init__(self):
+    def __init__(self, name):
         self.current_pos = 0
         self.state = 'home'
+        self.name = name
 
     def move(self, increment):
         if self.state is not 'home':
