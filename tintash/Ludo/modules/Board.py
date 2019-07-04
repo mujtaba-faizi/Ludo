@@ -39,27 +39,27 @@ class Board:
         # Set the screen background
         self.screen.fill(self.GRAY)
 
-    def draw(self, rowA1, columnA1, rowA2, columnA2, rowB1, columnB1, rowB2, columnB2, dice):
+    def draw(self, row_a1, column_a1, row_a2, column_a2, row_b1, column_b1, row_b2, column_b2, dice):
         # Draw the grid
         for row in range(15):
             for column in range(15):
                 color = self.WHITE
-                if (((row >= 0 and row < 6) or (row > 8 and row < 15)) and (column < 6 or column > 8)) \
-                        or (column == 7 and row > 7 and row < 14) \
-                        or (column == 7 and row > 0 and row < 7):
+                if ((0 <= row < 6 or 8 < row < 15) and (column < 6 or column > 8)) \
+                        or (column == 7 and 7 < row < 14) \
+                        or (column == 7 and 0 < row < 7):
                     color = self.BLACK
                 elif ((row == 8) and (column == 13 or column == 2)) or ((row == 6) and (column == 12 or column == 1)) \
                         or ((column == 6) and (row == 13 or row == 2)) or ((column == 8) and (row == 12 or row == 1)):
                     color = self.PURPLE
-                if (row == rowA1 and column == columnA1) or (row == rowA2 and column == columnA2):
+                if (row == row_a1 and column == column_a1) or (row == row_a2 and column == column_a2):
                     color = self.DARK_RED
-                if (row == rowB1 and column == columnB1) or (row == rowB2 and column == columnB2):
+                if (row == row_b1 and column == column_b1) or (row == row_b2 and column == column_b2):
                     color = self.DARK_GREEN
-                elif (row == 7 and column > 7 and column < 14):
+                elif row == 7 and 7 < column < 14:
                     color = self.GREEN
-                elif (row == 7 and column < 7 and column > 0):
+                elif row == 7 and 0 < column < 7:
                     color = self.RED
-                elif (row > 5 and row < 9 and column > 5 and column < 9):
+                elif 5 < row < 9 and 5 < column < 9:
                     color = self.GOLDEN
 
                 pygame.draw.rect(self.screen,
@@ -87,11 +87,3 @@ class Board:
         # # Be IDLE friendly. If you forget this line, the program will 'hang'
         # # on exit.
         # pygame.quit()
-
-
-
-
-
-
-
-
