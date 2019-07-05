@@ -34,6 +34,14 @@ class Ludo:
         self.playerB = Player("RED", pieces_b, 'B')
         self.board = Board()
 
+    def get_new_positions(self, green1_route, green2_route, red1_route, red2_route):
+
+        a = green1_route[self.playerA.pieces[0].current_pos]
+        b = green2_route[self.playerA.pieces[1].current_pos]
+        c = red1_route[self.playerB.pieces[0].current_pos]
+        d = red2_route[self.playerB.pieces[1].current_pos]
+        return a, b, c, d
+
     def render(self):
 
         green1_route = self.playerA.get_route(1)
@@ -72,10 +80,8 @@ class Ludo:
                     row = pos[1] // (self.HEIGHT + self.MARGIN)
                     pos = (row, column)
                     print(pos)
-                    a = green1_route[self.playerA.pieces[0].current_pos]
-                    b = green2_route[self.playerA.pieces[1].current_pos]
-                    c = red1_route[self.playerB.pieces[0].current_pos]
-                    d = red2_route[self.playerB.pieces[1].current_pos]
+
+                    a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
 
                     if a == pos or b == pos or c == pos or d == pos and lock == 1:
                         if a == pos and player_turn == 'green':
@@ -89,14 +95,25 @@ class Ludo:
                                     self.playerA.pieces[0].move(6)
 
                                 piece = self.playerA.pieces[0]
-                                print(piece.current_pos)
                                 new_position = green1_route[piece.current_pos]
+                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
+                                if a == c and self.playerB.pieces[0].state == 'unsafe':
+                                    self.playerB.pieces[0].killed()
+                                elif a == d and self.playerB.pieces[1].state == 'unsafe':
+                                    self.playerB.pieces[1].killed()
+                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
                                 self.board.draw(c[0], c[1], d[0], d[1], new_position[0], new_position[1], b[0], b[1],
                                                 self.dice, lock)
                             elif self.playerA.pieces[0].state != 'home':
                                 self.playerA.pieces[0].move(self.dice)
                                 piece = self.playerA.pieces[0]
                                 new_position = green1_route[piece.current_pos]
+                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
+                                if a == c and self.playerB.pieces[0].state == 'unsafe':
+                                    self.playerB.pieces[0].killed()
+                                elif a == d and self.playerB.pieces[1].state == 'unsafe':
+                                    self.playerB.pieces[1].killed()
+                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
                                 self.board.draw(c[0], c[1], d[0], d[1], new_position[0], new_position[1], b[0], b[1],
                                                 self.dice, lock)
                                 player_turn = 'red'  # keep alternating player turns
@@ -114,13 +131,24 @@ class Ludo:
                                     self.playerA.pieces[1].move(6)
                                 piece = self.playerA.pieces[1]
                                 new_position = green2_route[piece.current_pos]
-                                self.playerA.pieces[1].state = 'safe'
+                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
+                                if b == c and self.playerB.pieces[0].state == 'unsafe':
+                                    self.playerB.pieces[0].killed()
+                                elif b == d and self.playerB.pieces[1].state == 'unsafe':
+                                    self.playerB.pieces[1].killed()
+                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
                                 self.board.draw(c[0], c[1], d[0], d[1], a[0], a[1], new_position[0], new_position[1],
                                                 self.dice, lock)
                             elif self.playerA.pieces[1].state != 'home':
                                 self.playerA.pieces[1].move(self.dice)
                                 piece = self.playerA.pieces[1]
                                 new_position = green2_route[piece.current_pos]
+                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
+                                if b == c and self.playerB.pieces[0].state == 'unsafe':
+                                    self.playerB.pieces[0].killed()
+                                elif b == d and self.playerB.pieces[1].state == 'unsafe':
+                                    self.playerB.pieces[1].killed()
+                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
                                 self.board.draw(c[0], c[1], d[0], d[1], a[0], a[1], new_position[0], new_position[1],
                                                 self.dice, lock)
                                 player_turn = 'red'  # keep alternating player turns
@@ -138,13 +166,24 @@ class Ludo:
                                     self.playerB.pieces[0].move(6)
                                 piece = self.playerB.pieces[0]
                                 new_position = red1_route[piece.current_pos]
-                                self.playerB.pieces[0].state = 'safe'
+                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
+                                if c == a and self.playerA.pieces[0].state == 'unsafe':
+                                    self.playerA.pieces[0].killed()
+                                elif c == b and self.playerA.pieces[1].state == 'unsafe':
+                                    self.playerA.pieces[1].killed()
+                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
                                 self.board.draw(new_position[0], new_position[1], d[0], d[1], a[0], a[1], b[0], b[1],
                                                 self.dice, lock)
                             elif self.playerB.pieces[0].state != 'home':
                                 self.playerB.pieces[0].move(self.dice)
                                 piece = self.playerB.pieces[0]
                                 new_position = red1_route[piece.current_pos]
+                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
+                                if c == a and self.playerA.pieces[0].state == 'unsafe':
+                                    self.playerA.pieces[0].killed()
+                                elif c == b and self.playerA.pieces[1].state == 'unsafe':
+                                    self.playerA.pieces[1].killed()
+                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
                                 self.board.draw(new_position[0], new_position[1], d[0], d[1], a[0], a[1], b[0], b[1],
                                                 self.dice, lock)
                                 player_turn = 'green'  # keep alternating player turns
@@ -162,13 +201,24 @@ class Ludo:
                                     self.playerB.pieces[1].move(6)
                                 piece = self.playerB.pieces[1]
                                 new_position = red2_route[piece.current_pos]
-                                self.playerB.pieces[1].state = 'safe'
+                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
+                                if d == a and self.playerA.pieces[0].state == 'unsafe':
+                                    self.playerA.pieces[0].killed()
+                                elif d == b and self.playerA.pieces[1].state == 'unsafe':
+                                    self.playerA.pieces[1].killed()
+                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
                                 self.board.draw(c[0], c[1], new_position[0], new_position[1], a[0], a[1], b[0], b[1],
                                                 self.dice, lock)
                             elif self.playerB.pieces[1].state != 'home':
                                 self.playerB.pieces[1].move(self.dice)
                                 piece = self.playerB.pieces[1]
                                 new_position = red2_route[piece.current_pos]
+                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
+                                if d == a and self.playerA.pieces[0].state == 'unsafe':
+                                    self.playerA.pieces[0].killed()
+                                elif d == b and self.playerA.pieces[1].state == 'unsafe':
+                                    self.playerA.pieces[1].killed()
+                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
                                 self.board.draw(c[0], c[1], new_position[0], new_position[1], a[0], a[1], b[0], b[1],
                                                 self.dice, lock)
                                 player_turn = 'green'  # keep alternating player turns

@@ -21,3 +21,7 @@ class Piece:
         else:
             self.current_pos = 1
             self.state = 'safe'
+
+    def killed(self):
+        self.current_pos = 0
+        self.state = 'home'
