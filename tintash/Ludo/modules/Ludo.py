@@ -17,6 +17,8 @@ class Ludo:
     # Initial value of dice as default
     dice = 0
 
+    # safe_areas = [(8, 2), (8, 13), (6, 1), (6, 12), (2, 6), (13, 6), (1, 8), (12, 8)]
+
     def __init__(self):
 
         piece_a1 = Piece(1)
@@ -80,19 +82,19 @@ class Ludo:
                             if self.dice == 6:
                                 if a == (12, 12):
                                     if self.playerA.pieces[0].state == 'home':
-                                        self.playerA.pieces[0].current_pos += 1
+                                        self.playerA.pieces[0].move(1)
                                     else:
-                                        self.playerA.pieces[0].current_pos += 6
+                                        self.playerA.pieces[0].move(6)
                                 else:
-                                    self.playerA.pieces[0].current_pos += 6
+                                    self.playerA.pieces[0].move(6)
 
                                 piece = self.playerA.pieces[0]
+                                print(piece.current_pos)
                                 new_position = green1_route[piece.current_pos]
-                                self.playerA.pieces[0].state = 'safe'
                                 self.board.draw(c[0], c[1], d[0], d[1], new_position[0], new_position[1], b[0], b[1],
                                                 self.dice, lock)
                             elif self.playerA.pieces[0].state != 'home':
-                                self.playerA.pieces[0].current_pos += self.dice
+                                self.playerA.pieces[0].move(self.dice)
                                 piece = self.playerA.pieces[0]
                                 new_position = green1_route[piece.current_pos]
                                 self.board.draw(c[0], c[1], d[0], d[1], new_position[0], new_position[1], b[0], b[1],
@@ -105,18 +107,18 @@ class Ludo:
                             if self.dice == 6:
                                 if b == (11, 11):
                                     if self.playerA.pieces[1].state == 'home':
-                                        self.playerA.pieces[1].current_pos += 1
+                                        self.playerA.pieces[1].move(1)
                                     else:
-                                        self.playerA.pieces[1].current_pos += 6
+                                        self.playerA.pieces[1].move(6)
                                 else:
-                                    self.playerA.pieces[1].current_pos += 6
+                                    self.playerA.pieces[1].move(6)
                                 piece = self.playerA.pieces[1]
                                 new_position = green2_route[piece.current_pos]
                                 self.playerA.pieces[1].state = 'safe'
                                 self.board.draw(c[0], c[1], d[0], d[1], a[0], a[1], new_position[0], new_position[1],
                                                 self.dice, lock)
                             elif self.playerA.pieces[1].state != 'home':
-                                self.playerA.pieces[1].current_pos += self.dice
+                                self.playerA.pieces[1].move(self.dice)
                                 piece = self.playerA.pieces[1]
                                 new_position = green2_route[piece.current_pos]
                                 self.board.draw(c[0], c[1], d[0], d[1], a[0], a[1], new_position[0], new_position[1],
@@ -129,18 +131,18 @@ class Ludo:
                             if self.dice == 6:
                                 if c == (2, 2):
                                     if self.playerB.pieces[0].state == 'home':
-                                        self.playerB.pieces[0].current_pos += 1
+                                        self.playerB.pieces[0].move(1)
                                     else:
-                                        self.playerB.pieces[0].current_pos += 6
+                                        self.playerB.pieces[0].move(6)
                                 else:
-                                    self.playerB.pieces[0].current_pos += 6
+                                    self.playerB.pieces[0].move(6)
                                 piece = self.playerB.pieces[0]
                                 new_position = red1_route[piece.current_pos]
                                 self.playerB.pieces[0].state = 'safe'
                                 self.board.draw(new_position[0], new_position[1], d[0], d[1], a[0], a[1], b[0], b[1],
                                                 self.dice, lock)
                             elif self.playerB.pieces[0].state != 'home':
-                                self.playerB.pieces[0].current_pos += self.dice
+                                self.playerB.pieces[0].move(self.dice)
                                 piece = self.playerB.pieces[0]
                                 new_position = red1_route[piece.current_pos]
                                 self.board.draw(new_position[0], new_position[1], d[0], d[1], a[0], a[1], b[0], b[1],
@@ -153,18 +155,18 @@ class Ludo:
                             if self.dice == 6:
                                 if d == (3, 3):
                                     if self.playerB.pieces[1].state == 'home':
-                                        self.playerB.pieces[1].current_pos += 1
+                                        self.playerB.pieces[1].move(1)
                                     else:
-                                        self.playerB.pieces[1].current_pos += 6
+                                        self.playerB.pieces[1].move(6)
                                 else:
-                                    self.playerB.pieces[1].current_pos += 6
+                                    self.playerB.pieces[1].move(6)
                                 piece = self.playerB.pieces[1]
                                 new_position = red2_route[piece.current_pos]
                                 self.playerB.pieces[1].state = 'safe'
                                 self.board.draw(c[0], c[1], new_position[0], new_position[1], a[0], a[1], b[0], b[1],
                                                 self.dice, lock)
                             elif self.playerB.pieces[1].state != 'home':
-                                self.playerB.pieces[1].current_pos += self.dice
+                                self.playerB.pieces[1].move(self.dice)
                                 piece = self.playerB.pieces[1]
                                 new_position = red2_route[piece.current_pos]
                                 self.board.draw(c[0], c[1], new_position[0], new_position[1], a[0], a[1], b[0], b[1],

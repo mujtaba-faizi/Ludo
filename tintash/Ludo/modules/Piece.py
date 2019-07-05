@@ -19,5 +19,5 @@ class Piece:
             else:
                 self.state = 'unsafe'
         else:
-            self.current_pos = 0
+            self.current_pos = 1
             self.state = 'safe'
