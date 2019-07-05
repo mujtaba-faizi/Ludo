@@ -43,7 +43,7 @@ class Board:
         # Set the screen background
         self.screen.fill(self.BLACK)
 
-    def draw(self, row_a1, column_a1, row_a2, column_a2, row_b1, column_b1, row_b2, column_b2, dice, lock):
+    def draw(self, row_a1, column_a1, row_a2, column_a2, row_b1, column_b1, row_b2, column_b2, dice, lock, player_turn):
         # Draw the grid
         for row in range(15):
             for column in range(15):
@@ -67,6 +67,13 @@ class Board:
                     color = self.BLUE
                 if column == 7 and 0 < row < 7:
                     color = self.YELLOW
+                if row == 0 and column == 14:
+                    if lock == 1:
+                        color = self.WHITE
+                    elif player_turn == 'green':
+                        color = self.GREEN
+                    elif player_turn == 'red':
+                        color = self.RED
 
                 pygame.draw.rect(self.screen,
                                  color,
