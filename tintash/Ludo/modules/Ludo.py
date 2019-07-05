@@ -17,8 +17,6 @@ class Ludo:
     # Initial value of dice as default
     dice = 0
 
-    # safe_areas = [(8, 2), (8, 13), (6, 1), (6, 12), (2, 6), (13, 6), (1, 8), (12, 8)]
-
     def __init__(self):
 
         piece_a1 = Piece(1)
@@ -36,6 +34,7 @@ class Ludo:
 
     def get_new_positions(self, green1_route, green2_route, red1_route, red2_route):
 
+        # get the updated positions of all pieces
         a = green1_route[self.playerA.pieces[0].current_pos]
         b = green2_route[self.playerA.pieces[1].current_pos]
         c = red1_route[self.playerB.pieces[0].current_pos]
@@ -62,11 +61,10 @@ class Ludo:
 
         self.board.draw(2, 2, 3, 3, 12, 12, 11, 11, 0, 1)     # initial state of board
 
-        # coordinates = []
         player_turn = 'green'
         lock = 0
 
-        # -------- Main Program Loop -----------
+        # -------- Main Controller Implementation -----------
         while not done:
             for event in pygame.event.get():  # User did something
                 if event.type == pygame.QUIT:  # If user clicked close
@@ -225,8 +223,6 @@ class Ludo:
 
                             lock = 0  # the player can roll the dice now
 
-                    # coordinates.append(pos)
-
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                     # User presses enter
                     if lock == 0:
@@ -254,9 +250,6 @@ class Ludo:
                             lock = 0
                         else:
                             lock = 1
-
-                # with open('data/PlayerB_route.pkl', 'wb') as f:
-                #     pickle.dump(coordinates, f)
 
     def main(self):
         self.render()

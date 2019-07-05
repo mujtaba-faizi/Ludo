@@ -90,8 +90,6 @@ class Board:
 
         # Go ahead and update the screen with what we've drawn.
         pygame.display.flip()
-        # with open('PlayerB_route.pkl', 'wb') as f:    # For saving the coordinates in a file as I click on the tiles
-        #     pickle.dump(coordinates, f)
 
         # # Be IDLE friendly. If you forget this line, the program will 'hang'
         # # on exit.
