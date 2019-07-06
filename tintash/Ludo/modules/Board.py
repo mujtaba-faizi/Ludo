@@ -18,14 +18,14 @@ class Board:
     BLUE = (0, 0, 255)
 
     # This sets the self.WIDTH and self.HEIGHT of each grid location
-    WIDTH = 28
-    HEIGHT = 28
+    WIDTH = 32
+    HEIGHT = 32
 
     # This sets the margin between each cell
-    MARGIN = 5
+    MARGIN = 1
 
     # This sets the size of the window
-    WINDOW_SIZE = [500, 500]
+    WINDOW_SIZE = [496, 497]
 
     color = BLACK
 
@@ -88,7 +88,7 @@ class Board:
                 font = pygame.font.Font(None, 50)
                 text = str(dice)
                 text = font.render(text, True, self.color)
-                self.screen.blit(text, (240, 235))  # dice number
+                self.screen.blit(text, (238, 233))  # dice number
 
         # Used to manage how fast the screen updates
         clock = pygame.time.Clock()
