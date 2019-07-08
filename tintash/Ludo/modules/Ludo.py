@@ -80,8 +80,7 @@ class Ludo:
                     print(pos)
 
                     a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
-
-                    if a == pos or b == pos or c == pos or d == pos and self.lock == 1:
+                    if (a == pos or b == pos or c == pos or d == pos) and self.lock == 1:
                         if a == pos and self.player_turn == 'green':
                             if self.dice == 6:
                                 if a == (12, 12):
@@ -135,6 +134,7 @@ class Ludo:
                                 elif b == d and self.playerB.pieces[1].state == 'unsafe':
                                     self.playerB.pieces[1].killed()
                                 a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
+                                print(self.lock)
                                 self.board.draw(c[0], c[1], d[0], d[1], a[0], a[1], new_position[0], new_position[1],
                                                 self.dice, self.lock, self.player_turn)
                             elif self.playerA.pieces[1].state != 'home':
