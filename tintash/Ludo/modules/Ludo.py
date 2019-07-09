@@ -35,21 +35,66 @@ class Ludo:
         self.playerB = Player("RED", pieces_b, 'B')
         self.board = Board()
 
-    def get_new_positions(self, green1_route, green2_route, red1_route, red2_route):
+        # all routes
+        self.green1_route = self.playerA.get_route(1)
+        self.green2_route = self.playerA.get_route(2)
+        self.red1_route = self.playerB.get_route(1)
+        self.red2_route = self.playerB.get_route(2)
+
+    def get_new_positions(self):
 
         # get the updated positions of all pieces
-        a = green1_route[self.playerA.pieces[0].current_pos]
-        b = green2_route[self.playerA.pieces[1].current_pos]
-        c = red1_route[self.playerB.pieces[0].current_pos]
-        d = red2_route[self.playerB.pieces[1].current_pos]
+        a = self.green1_route[self.playerA.pieces[0].current_pos]
+        b = self.green2_route[self.playerA.pieces[1].current_pos]
+        c = self.red1_route[self.playerB.pieces[0].current_pos]
+        d = self.red2_route[self.playerB.pieces[1].current_pos]
         return a, b, c, d
 
-    def render(self):
+    def kill(self, position):
 
-        green1_route = self.playerA.get_route(1)
-        green2_route = self.playerA.get_route(2)
-        red1_route = self.playerB.get_route(1)
-        red2_route = self.playerB.get_route(2)
+        a, b, c, d = self.get_new_positions()
+        if self.player_turn == 'green':
+            if position == c and self.playerB.pieces[0].state == 'unsafe':
+                self.playerB.pieces[0].killed()
+            elif position == d and self.playerB.pieces[1].state == 'unsafe':
+                self.playerB.pieces[1].killed()
+        else:
+            if position == a and self.playerA.pieces[0].state == 'unsafe':
+                self.playerA.pieces[0].killed()
+            elif position == b and self.playerA.pieces[1].state == 'unsafe':
+                self.playerA.pieces[1].killed()
+
+    def movement(self, position, home, player1, route, piece_no):
+
+        if self.dice == 6:
+            if position == home:
+                if player1.pieces[piece_no].state == 'home':
+                    player1.pieces[piece_no].move(1)
+                else:
+                    player1.pieces[piece_no].move(6)
+            else:
+                player1.pieces[piece_no].move(6)
+            piece = player1.pieces[piece_no]
+            new_position = route[piece.current_pos]
+            self.kill(new_position)
+            self.lock = 0    # the player can roll the dice now
+            return new_position
+
+        elif player1.pieces[piece_no].state != 'home':
+            player1.pieces[piece_no].move(self.dice)
+            piece = player1.pieces[piece_no]
+            new_position = route[piece.current_pos]
+            self.kill(new_position)
+            if self.player_turn == 'green':
+                self.player_turn = 'red'
+            else:
+                self.player_turn = 'green'
+            self.lock = 0    # the player can roll the dice now
+            return new_position
+
+        return False
+
+    def render(self):
 
         # Create a 2 dimensional array. A two dimensional
         # array is simply a list of lists.
@@ -79,162 +124,50 @@ class Ludo:
                     pos = (row, column)
                     print(pos)
 
-                    a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
+                    a, b, c, d = self.get_new_positions()
+
                     if (a == pos or b == pos or c == pos or d == pos) and self.lock == 1:
+
                         if a == pos and self.player_turn == 'green':
-                            if self.dice == 6:
-                                if a == (12, 12):
-                                    if self.playerA.pieces[0].state == 'home':
-                                        self.playerA.pieces[0].move(1)
-                                    else:
-                                        self.playerA.pieces[0].move(6)
-                                else:
-                                    self.playerA.pieces[0].move(6)
-
-                                piece = self.playerA.pieces[0]
-                                new_position = green1_route[piece.current_pos]
-                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
-                                if a == c and self.playerB.pieces[0].state == 'unsafe':
-                                    self.playerB.pieces[0].killed()
-                                elif a == d and self.playerB.pieces[1].state == 'unsafe':
-                                    self.playerB.pieces[1].killed()
-                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
+                            new_position = self.movement(a, (12, 12), self.playerA, self.green1_route, 0)
+                            if new_position is not False:
+                                a, b, c, d = self.get_new_positions()
                                 self.board.draw(c[0], c[1], d[0], d[1], new_position[0], new_position[1], b[0], b[1],
                                                 self.dice, self.lock, self.player_turn)
-                            elif self.playerA.pieces[0].state != 'home':
-                                self.playerA.pieces[0].move(self.dice)
-                                piece = self.playerA.pieces[0]
-                                new_position = green1_route[piece.current_pos]
-                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
-                                if a == c and self.playerB.pieces[0].state == 'unsafe':
-                                    self.playerB.pieces[0].killed()
-                                elif a == d and self.playerB.pieces[1].state == 'unsafe':
-                                    self.playerB.pieces[1].killed()
-                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
-                                self.board.draw(c[0], c[1], d[0], d[1], new_position[0], new_position[1], b[0], b[1],
-                                                self.dice, self.lock, self.player_turn)
-                                self.player_turn = 'red'  # keep alternating player turns
-
-                            self.lock = 0  # the player can roll the dice now
 
                         elif b == pos and self.player_turn == 'green':
-                            if self.dice == 6:
-                                if b == (11, 11):
-                                    if self.playerA.pieces[1].state == 'home':
-                                        self.playerA.pieces[1].move(1)
-                                    else:
-                                        self.playerA.pieces[1].move(6)
-                                else:
-                                    self.playerA.pieces[1].move(6)
-                                piece = self.playerA.pieces[1]
-                                new_position = green2_route[piece.current_pos]
-                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
-                                if b == c and self.playerB.pieces[0].state == 'unsafe':
-                                    self.playerB.pieces[0].killed()
-                                elif b == d and self.playerB.pieces[1].state == 'unsafe':
-                                    self.playerB.pieces[1].killed()
-                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
-                                print(self.lock)
+                            new_position = self.movement(b, (11, 11), self.playerA, self.green2_route, 1)
+                            if new_position is not False:
+                                a, b, c, d = self.get_new_positions()
                                 self.board.draw(c[0], c[1], d[0], d[1], a[0], a[1], new_position[0], new_position[1],
                                                 self.dice, self.lock, self.player_turn)
-                            elif self.playerA.pieces[1].state != 'home':
-                                self.playerA.pieces[1].move(self.dice)
-                                piece = self.playerA.pieces[1]
-                                new_position = green2_route[piece.current_pos]
-                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
-                                if b == c and self.playerB.pieces[0].state == 'unsafe':
-                                    self.playerB.pieces[0].killed()
-                                elif b == d and self.playerB.pieces[1].state == 'unsafe':
-                                    self.playerB.pieces[1].killed()
-                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
-                                self.board.draw(c[0], c[1], d[0], d[1], a[0], a[1], new_position[0], new_position[1],
-                                                self.dice, self.lock, self.player_turn)
-                                self.player_turn = 'red'  # keep alternating player turns
-
-                            self.lock = 0  # the player can roll the dice now
 
                         elif c == pos and self.player_turn == 'red':
-                            if self.dice == 6:
-                                if c == (2, 2):
-                                    if self.playerB.pieces[0].state == 'home':
-                                        self.playerB.pieces[0].move(1)
-                                    else:
-                                        self.playerB.pieces[0].move(6)
-                                else:
-                                    self.playerB.pieces[0].move(6)
-                                piece = self.playerB.pieces[0]
-                                new_position = red1_route[piece.current_pos]
-                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
-                                if c == a and self.playerA.pieces[0].state == 'unsafe':
-                                    self.playerA.pieces[0].killed()
-                                elif c == b and self.playerA.pieces[1].state == 'unsafe':
-                                    self.playerA.pieces[1].killed()
-                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
+                            new_position = self.movement(c, (2, 2), self.playerB, self.red1_route, 0)
+                            if new_position is not False:
+                                a, b, c, d = self.get_new_positions()
                                 self.board.draw(new_position[0], new_position[1], d[0], d[1], a[0], a[1], b[0], b[1],
                                                 self.dice, self.lock, self.player_turn)
-                            elif self.playerB.pieces[0].state != 'home':
-                                self.playerB.pieces[0].move(self.dice)
-                                piece = self.playerB.pieces[0]
-                                new_position = red1_route[piece.current_pos]
-                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
-                                if c == a and self.playerA.pieces[0].state == 'unsafe':
-                                    self.playerA.pieces[0].killed()
-                                elif c == b and self.playerA.pieces[1].state == 'unsafe':
-                                    self.playerA.pieces[1].killed()
-                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
-                                self.board.draw(new_position[0], new_position[1], d[0], d[1], a[0], a[1], b[0], b[1],
-                                                self.dice, self.lock, self.player_turn)
-                                self.player_turn = 'green'  # keep alternating player turns
-
-                            self.lock = 0  # the player can roll the dice now
 
                         elif d == pos and self.player_turn == 'red':
-                            if self.dice == 6:
-                                if d == (3, 3):
-                                    if self.playerB.pieces[1].state == 'home':
-                                        self.playerB.pieces[1].move(1)
-                                    else:
-                                        self.playerB.pieces[1].move(6)
-                                else:
-                                    self.playerB.pieces[1].move(6)
-                                piece = self.playerB.pieces[1]
-                                new_position = red2_route[piece.current_pos]
-                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
-                                if d == a and self.playerA.pieces[0].state == 'unsafe':
-                                    self.playerA.pieces[0].killed()
-                                elif d == b and self.playerA.pieces[1].state == 'unsafe':
-                                    self.playerA.pieces[1].killed()
-                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
+                            new_position = self.movement(d, (3, 3), self.playerB, self.red2_route, 1)
+                            if new_position is not False:
+                                a, b, c, d = self.get_new_positions()
                                 self.board.draw(c[0], c[1], new_position[0], new_position[1], a[0], a[1], b[0], b[1],
                                                 self.dice, self.lock, self.player_turn)
-                            elif self.playerB.pieces[1].state != 'home':
-                                self.playerB.pieces[1].move(self.dice)
-                                piece = self.playerB.pieces[1]
-                                new_position = red2_route[piece.current_pos]
-                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
-                                if d == a and self.playerA.pieces[0].state == 'unsafe':
-                                    self.playerA.pieces[0].killed()
-                                elif d == b and self.playerA.pieces[1].state == 'unsafe':
-                                    self.playerA.pieces[1].killed()
-                                a, b, c, d = self.get_new_positions(green1_route, green2_route, red1_route, red2_route)
-                                self.board.draw(c[0], c[1], new_position[0], new_position[1], a[0], a[1], b[0], b[1],
-                                                self.dice, self.lock, self.player_turn)
-                                self.player_turn = 'green'  # keep alternating player turns
-
-                            self.lock = 0  # the player can roll the dice now
 
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                     # User presses enter
                     if self.lock == 0:
                         self.dice = random.randint(1, 6)
-                        self.board.draw(red1_route[self.playerB.pieces[0].current_pos][0],
-                                        red1_route[self.playerB.pieces[0].current_pos][1],
-                                        red2_route[self.playerB.pieces[1].current_pos][0],
-                                        red2_route[self.playerB.pieces[1].current_pos][1],
-                                        green1_route[self.playerA.pieces[0].current_pos][0],
-                                        green1_route[self.playerA.pieces[0].current_pos][1],
-                                        green2_route[self.playerA.pieces[1].current_pos][0],
-                                        green2_route[self.playerA.pieces[1].current_pos][1],
+                        self.board.draw(self.red1_route[self.playerB.pieces[0].current_pos][0],
+                                        self.red1_route[self.playerB.pieces[0].current_pos][1],
+                                        self.red2_route[self.playerB.pieces[1].current_pos][0],
+                                        self.red2_route[self.playerB.pieces[1].current_pos][1],
+                                        self.green1_route[self.playerA.pieces[0].current_pos][0],
+                                        self.green1_route[self.playerA.pieces[0].current_pos][1],
+                                        self.green2_route[self.playerA.pieces[1].current_pos][0],
+                                        self.green2_route[self.playerA.pieces[1].current_pos][1],
                                         self.dice,
                                         self.lock,
                                         self.player_turn
