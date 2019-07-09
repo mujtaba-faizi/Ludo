@@ -1,6 +1,7 @@
 from modules.Board import Board
 from modules.Player import Player
 from modules.Piece import Piece
+
 import random
 import pygame
 
@@ -17,7 +18,6 @@ class Ludo:
     # Initial value of dice as default
     dice = 0
 
-    player_turn = 'green'
     lock = 0
 
     def __init__(self):
@@ -41,6 +41,9 @@ class Ludo:
         self.red1_route = self.playerB.get_route(1)
         self.red2_route = self.playerB.get_route(2)
 
+        self.player_turn = ['green', 'red']
+        self.index = 0
+
     def get_new_positions(self):
 
         # get the updated positions of all pieces
@@ -53,7 +56,7 @@ class Ludo:
     def kill(self, position):
 
         a, b, c, d = self.get_new_positions()
-        if self.player_turn == 'green':
+        if self.player_turn[self.index] == 'green':
             if position == c and self.playerB.pieces[0].state == 'unsafe':
                 self.playerB.pieces[0].killed()
             elif position == d and self.playerB.pieces[1].state == 'unsafe':
@@ -77,7 +80,6 @@ class Ludo:
             piece = player1.pieces[piece_no]
             new_position = route[piece.current_pos]
             self.kill(new_position)
-            self.lock = 0    # the player can roll the dice now
             return new_position
 
         elif player1.pieces[piece_no].state != 'home':
@@ -85,11 +87,7 @@ class Ludo:
             piece = player1.pieces[piece_no]
             new_position = route[piece.current_pos]
             self.kill(new_position)
-            if self.player_turn == 'green':
-                self.player_turn = 'red'
-            else:
-                self.player_turn = 'green'
-            self.lock = 0    # the player can roll the dice now
+            self.index = (self.index + 1) % len(self.player_turn)
             return new_position
 
         return False
@@ -107,7 +105,7 @@ class Ludo:
         # Loop until the user clicks the close button.
         done = False
 
-        self.board.draw(2, 2, 3, 3, 12, 12, 11, 11, 0, 1, self.player_turn)     # initial state of board
+        self.board.draw(2, 2, 3, 3, 12, 12, 11, 11, 0, 1, self.player_turn[self.index])     # initial state of board
 
         # -------- Main Controller Implementation -----------
         while not done:
@@ -128,33 +126,37 @@ class Ludo:
 
                     if (a == pos or b == pos or c == pos or d == pos) and self.lock == 1:
 
-                        if a == pos and self.player_turn == 'green':
+                        if a == pos and self.player_turn[self.index] == 'green':
                             new_position = self.movement(a, (12, 12), self.playerA, self.green1_route, 0)
                             if new_position is not False:
                                 a, b, c, d = self.get_new_positions()
                                 self.board.draw(c[0], c[1], d[0], d[1], new_position[0], new_position[1], b[0], b[1],
-                                                self.dice, self.lock, self.player_turn)
+                                                self.dice, self.lock, self.player_turn[self.index])
+                                self.lock = 0  # the player can roll the dice now
 
-                        elif b == pos and self.player_turn == 'green':
+                        elif b == pos and self.player_turn[self.index] == 'green':
                             new_position = self.movement(b, (11, 11), self.playerA, self.green2_route, 1)
                             if new_position is not False:
                                 a, b, c, d = self.get_new_positions()
                                 self.board.draw(c[0], c[1], d[0], d[1], a[0], a[1], new_position[0], new_position[1],
-                                                self.dice, self.lock, self.player_turn)
+                                                self.dice, self.lock, self.player_turn[self.index])
+                                self.lock = 0  # the player can roll the dice now
 
-                        elif c == pos and self.player_turn == 'red':
+                        elif c == pos and self.player_turn[self.index] == 'red':
                             new_position = self.movement(c, (2, 2), self.playerB, self.red1_route, 0)
                             if new_position is not False:
                                 a, b, c, d = self.get_new_positions()
                                 self.board.draw(new_position[0], new_position[1], d[0], d[1], a[0], a[1], b[0], b[1],
-                                                self.dice, self.lock, self.player_turn)
+                                                self.dice, self.lock, self.player_turn[self.index])
+                                self.lock = 0  # the player can roll the dice now
 
-                        elif d == pos and self.player_turn == 'red':
+                        elif d == pos and self.player_turn[self.index] == 'red':
                             new_position = self.movement(d, (3, 3), self.playerB, self.red2_route, 1)
                             if new_position is not False:
                                 a, b, c, d = self.get_new_positions()
                                 self.board.draw(c[0], c[1], new_position[0], new_position[1], a[0], a[1], b[0], b[1],
-                                                self.dice, self.lock, self.player_turn)
+                                                self.dice, self.lock, self.player_turn[self.index])
+                                self.lock = 0  # the player can roll the dice now
 
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                     # User presses enter
@@ -170,18 +172,16 @@ class Ludo:
                                         self.green2_route[self.playerA.pieces[1].current_pos][1],
                                         self.dice,
                                         self.lock,
-                                        self.player_turn
+                                        self.player_turn[self.index]
                                         )
 
                         # to avoid having to click in-order to proceed when all pieces are at home
-                        if self.player_turn == 'green' and self.dice != 6 and \
+                        if self.player_turn[self.index] == 'green' and self.dice != 6 and \
                                 self.playerA.pieces[0].state == 'home' and self.playerA.pieces[1].state == 'home':
-                            self.player_turn = 'red'
-                            self.lock = 0
-                        elif self.player_turn == 'red' and self.dice != 6 and \
+                            self.index = (self.index + 1) % len(self.player_turn)
+                        elif self.player_turn[self.index] == 'red' and self.dice != 6 and \
                                 self.playerB.pieces[0].state == 'home' and self.playerB.pieces[1].state == 'home':
-                            self.player_turn = 'green'
-                            self.lock = 0
+                            self.index = (self.index + 1) % len(self.player_turn)
                         else:
                             self.lock = 1
 
