@@ -1,9 +1,7 @@
 # Ludo Game
 
 ## Python 3.6 Requirements
-- Pygame
-- Random
-- Pickle
+- pygame==1.9.6
 
 ## Instructions
 - Run the run.py file to start the game.
